@@ -111,7 +111,7 @@ export type CloudflareContext<
  *
  * This is used both in production (in the actual built worker) and in development (`next dev`)
  *
- * Note: this symbol needs to be kept in sync with the one used in `src/cli/templates/worker.ts`
+ * Note: this symbol needs to be kept in sync with the one used in `src/cli/templates/init.ts`
  */
 const cloudflareContextSymbol = Symbol.for("__cloudflare-context__");
 
