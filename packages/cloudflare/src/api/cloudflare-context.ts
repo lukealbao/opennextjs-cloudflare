@@ -238,6 +238,10 @@ async function getCloudflareContextAsync<
 	throw new Error(initOpenNextCloudflareForDevErrorMsg);
 }
 
+// Only one workerd instance should be active for a given process. Caching the promise here instead
+// of the resolved context ensures that the singleton is guarded synchronously.
+let singletonCloudflareContextPromise: undefined | Promise<CloudflareContext<CfProperties, Context>>;
+
 /**
  * Performs some initial setup to integrate as best as possible the local Next.js dev server (run via `next dev`)
  * with the open-next Cloudflare adapter
@@ -256,7 +260,8 @@ export async function initOpenNextCloudflareForDev(options?: GetPlatformProxyOpt
 		);
 	}
 
-	const context = await getCloudflareContextFromWrangler(options);
+	singletonCloudflareContextPromise ??= getCloudflareContextFromWrangler(options);
+	const context = await singletonCloudflareContextPromise;
 
 	addCloudflareContextToNodejsGlobal(context);
 
